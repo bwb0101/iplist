@@ -37,11 +37,11 @@ jobs:
 
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to the output on this push; exiting."
-            exit 0
+            #exit 0
           fi
 
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "i@i-meto.com"
+          git config --global user.email "bw@bw.com"
           git add .
           git commit -m "[auto] $(date '+%Y-%m-%d %H:%M:%S')"
           git push
