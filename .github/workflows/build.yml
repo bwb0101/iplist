@@ -37,9 +37,9 @@ jobs:
           cp ../build/data/country/* ./data/country/
           cp ../build/data/special/* ./data/special/
           # 合并大陆香港澳门
-          cat ./data/country/CN.txt > ./data/COUNTRY_ALL_CN.txt
-          cat ./data/country/HK.txt > ./data/COUNTRY_ALL_CN.txt
-          cat ./data/country/MO.txt > ./data/COUNTRY_ALL_CN.txt
+          cat ./data/country/CN.txt >> ./data/COUNTRY_ALL_CN.txt
+          cat ./data/country/HK.txt >> ./data/COUNTRY_ALL_CN.txt
+          cat ./data/country/MO.txt >> ./data/COUNTRY_ALL_CN.txt
           
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to the output on this push; exiting."
