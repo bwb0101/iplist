@@ -36,13 +36,17 @@ jobs:
           cp ../build/data/cncity/* ./data/cncity/
           cp ../build/data/country/* ./data/country/
           cp ../build/data/special/* ./data/special/
+          # 合并大陆香港澳门
+          cat ./data/CN.txt > ./data/CN_ALL.txt
+          cat ./data/HK.txt > ./data/CN_ALL.txt
+          cat ./data/MO.txt > ./data/CN_ALL.txt
           
-          echo "$(date '+%Y%m%d%H%M%S')" > ./data/version
-
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to the output on this push; exiting."
             exit 0
           fi
+
+          echo "$(date '+%Y%m%d%H%M%S')" > ./data/version
 
           git config --global user.name "github-actions[bot]"
           git config --global user.email "bw@bw.com"
