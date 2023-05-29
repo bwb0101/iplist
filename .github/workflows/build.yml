@@ -32,6 +32,8 @@ jobs:
           cp ../build/data/cncity/* ./data/cncity/
           cp ../build/data/country/* ./data/country/
           cp ../build/data/special/* ./data/special/
+          
+          echo "${{ env.DATE }}" > ./data/version
 
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to the output on this push; exiting."
