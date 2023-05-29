@@ -37,7 +37,7 @@ jobs:
           cp ../build/data/country/* ./data/country/
           cp ../build/data/special/* ./data/special/
           
-          echo "${{ env.DATE }}" > ./data/version
+          echo "$(date '+%Y%m%d%H%M%S')" > ./data/version
 
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to the output on this push; exiting."
