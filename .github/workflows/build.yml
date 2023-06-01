@@ -41,6 +41,7 @@ jobs:
           
           cd ..
           mkdir -p ip2l
+          wget https://raw.githubusercontent.com/jkingben/iplist/master/download.pl -O $IP2L_DL
           chmod +x $IP2L_DL
           ./$IP2L_DL -package DB1LITE -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c.zip
           ./$IP2L_DL -package DB1LITEIPV6 -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c6.zip
