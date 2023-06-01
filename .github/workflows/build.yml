@@ -26,6 +26,9 @@ jobs:
       - name: Parse
         run: |
           cd build
+          yarn install
+          yarn add qqwry.ipdb
+          yarn build
       - name: Push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -33,11 +36,21 @@ jobs:
           sudo -E apt-get -qq install libwww-perl
           sudo -E apt-get -qq install libcrypt-ssleay-perl
 
-          cd ./data        
+          cd ./data
+
+          cp ../build/data/cncity/* ./data/cncity/
+          cp ../build/data/country/* ./data/country/
+          cp ../build/data/special/* ./data/special/
+          # 合并大陆香港澳门
+          cat ./data/country/CN.txt > ./data/COUNTRY_ALL_CN.txt
+          echo '' >> ./data/COUNTRY_ALL_CN.txt
+          cat ./data/country/HK.txt >> ./data/COUNTRY_ALL_CN.txt
+          echo '' >> ./data/COUNTRY_ALL_CN.txt
+          cat ./data/country/MO.txt >> ./data/COUNTRY_ALL_CN.txt
+          md5sum ./data/COUNTRY_ALL_CN.txt | awk '{ print $1 }' > ./data/qqwry.sum
           
-          cd ..
           mkdir -p ip2l
-          wget https://raw.githubusercontent.com/jkingben/iplist/master/download.pl -O $IP2L_DL
+          wget https://raw.githubusercontent.com/jkingben/iplist/master/$IP2L_DL -O $IP2L_DL
           chmod +x $IP2L_DL
           ./$IP2L_DL -quiet -package DB1LITE -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c.zip
           ./$IP2L_DL -quiet -package DB1LITEIPV6 -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c6.zip
