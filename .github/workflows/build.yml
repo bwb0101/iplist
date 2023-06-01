@@ -35,16 +35,46 @@ jobs:
 
           cd ./data        
           echo $PWD
-          set qqwry_up = 0
-          if [ -z "$(git status --porcelain)" ]; then
-            echo "No qqwry changes to the output on this push"
-          else
-            echo "$(date '+%Y%m%d%H%M%S')" > ./data/qqwry.ver
-            qqwry_up = 1
-          fi
+          #set qqwry_up = 0
+          #if [ -z "$(git status --porcelain)" ]; then
+          #  echo "No qqwry changes to the output on this push"
+          #else
+          #  echo "$(date '+%Y%m%d%H%M%S')" > ./data/qqwry.ver
+          #  qqwry_up = 1
+          #fi
           
           cd ..
           mkdir -p ip2l
           echo $PWD
+          wget https://raw.githubusercontent.com/jkingben/iplist/master/download.pl -O $IP2L_DL
+          chmod +x $IP2L_DL
+          ./$IP2L_DL -quiet -package DB1LITE -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c.zip
+          ./$IP2L_DL -quiet -package DB1LITEIPV6 -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c6.zip
+          cd ./ip2l
+          unzip -o c.zip
+          unzip -o c6.zip
+          zip -q ip2l.zip *.CSV
+          mkdir -p ../data/ip2location
+          #cp *.CSV ../data/ip2location/
+          cp ip2l.zip ../data/ip2location/
+          md5sum ../data/ip2location/ip2l.zip | awk '{ print $1 }' > ../data/ip2l.sum
+          cd ..
           
-          ls ./data
+          #set ip2l_up = 0
+          #if [ -z "$(git status --porcelain)" ]; then
+          #  echo "No ip2l changes to the output on this push"
+          #else
+          #  echo "$(date '+%Y%m%d%H%M%S')" > ../data/ip2l.ver
+          #  ip2l_up = 1
+          #fi
+          
+          cd ./data
+          #if [ $qqwry_up = 1 ] || [ $ip2l_up = 1 ]; then
+          if [ -z "$(git status --porcelain)" ]; then
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "bw@bw.com"
+            git add .
+            git commit -m "[auto] $(date '+%Y-%m-%d %H:%M:%S')"
+            git push
+          fi
+
