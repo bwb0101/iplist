@@ -41,23 +41,21 @@ jobs:
           
           cd ..
           mkdir -p ip2l
-          cd ./ip2l
-          cp $IP2L_DOWN ./
           chmod +x $IP2L_DOWN
-          ./$IP2L_DOWN -package DB1 -token ${{ secrets.IP2LOCATION }} -output c.zip
-          ./$IP2L_DOWN -package DB1IPV6 -token ${{ secrets.IP2LOCATION }} -output c.zip
+          ./$IP2L_DOWN -package DB1 -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c.zip
+          ./$IP2L_DOWN -package DB1IPV6 -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c6.zip
+          cd ./ip2l
           unzip -o c.zip
           unzip -o c6.zip
           zip -q ip2l.zip *.CSV
-          cp ./*.CSV ../data/ip2location/
-          cp ./ip2l.zip ../data/ip2location/
+          cp *.CSV ../data/ip2location/
+          cp ip2l.zip ../data/ip2location/
 
           set ip2l_up = 0
-          cd ./ip2l
           if [ -z "$(git status --porcelain)" ]; then
             echo "No ip2l changes to the output on this push"
           else
-            echo "$(date '+%Y%m%d%H%M%S')" > ./data/ip2l.ver
+            echo "$(date '+%Y%m%d%H%M%S')" > ../data/ip2l.ver
             ip2l_up = 1
           fi
           
