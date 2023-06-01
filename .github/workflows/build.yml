@@ -65,7 +65,6 @@ jobs:
           cd ..
                     
           cd ./data
-          #if [ $qqwry_up = 1 ] || [ $ip2l_up = 1 ]; then
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to the output on this push; exiting."
             exit 0
