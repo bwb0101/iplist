@@ -34,18 +34,9 @@ jobs:
           sudo -E apt-get -qq install libcrypt-ssleay-perl
 
           cd ./data        
-          echo $PWD
-          #set qqwry_up = 0
-          #if [ -z "$(git status --porcelain)" ]; then
-          #  echo "No qqwry changes to the output on this push"
-          #else
-          #  echo "$(date '+%Y%m%d%H%M%S')" > ./data/qqwry.ver
-          #  qqwry_up = 1
-          #fi
           
           cd ..
           mkdir -p ip2l
-          echo $PWD
           wget https://raw.githubusercontent.com/jkingben/iplist/master/download.pl -O $IP2L_DL
           chmod +x $IP2L_DL
           ./$IP2L_DL -quiet -package DB1LITE -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c.zip
@@ -59,22 +50,16 @@ jobs:
           cp ip2l.zip ../data/ip2location/
           md5sum ../data/ip2location/ip2l.zip | awk '{ print $1 }' > ../data/ip2l.sum
           cd ..
-          
-          #set ip2l_up = 0
-          #if [ -z "$(git status --porcelain)" ]; then
-          #  echo "No ip2l changes to the output on this push"
-          #else
-          #  echo "$(date '+%Y%m%d%H%M%S')" > ../data/ip2l.ver
-          #  ip2l_up = 1
-          #fi
-          
+                    
           cd ./data
           #if [ $qqwry_up = 1 ] || [ $ip2l_up = 1 ]; then
-          if [ -n "$(git status --porcelain)" ]; then
-            git config --global user.name "github-actions[bot]"
-            git config --global user.email "bw@bw.com"
-            git add .
-            git commit -m "[auto] $(date '+%Y-%m-%d %H:%M:%S')"
-            git push
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to the output on this push; exiting."
+            exit 0
           fi
 
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "bw@bw.com"
+          git add .
+          git commit -m "[auto] $(date '+%Y-%m-%d %H:%M:%S')"
+          git push
