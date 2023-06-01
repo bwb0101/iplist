@@ -30,9 +30,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          sudo -E apt-get -qq install perl-libwww-perl
-          sudo -E apt-get -qq install perl-CPAN
-          sudo -E apt-get -qq install perl-LWP-Protocol-https perl-Crypt-SSLeay
+          sudo -E apt-get -qq install libwww-perl
+          sudo -E apt-get -qq install libcrypt-ssleay-perl
 
           cd ./data        
           set qqwry_up = 0
