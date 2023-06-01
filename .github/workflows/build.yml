@@ -70,7 +70,7 @@ jobs:
           
           cd ./data
           #if [ $qqwry_up = 1 ] || [ $ip2l_up = 1 ]; then
-          if [ -z "$(git status --porcelain)" ]; then
+          if [ -n "$(git status --porcelain)" ]; then
             git config --global user.name "github-actions[bot]"
             git config --global user.email "bw@bw.com"
             git add .
