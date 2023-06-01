@@ -25,24 +25,12 @@ jobs:
       - name: Parse
         run: |
           cd build
-          yarn install
-          yarn add qqwry.ipdb
-          yarn build
       - name: Push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IP2LOCATION: ${{ secrets.IP2LOCATION }}
         run: |
-          cd ./data
-          cp ../build/data/cncity/* ./data/cncity/
-          cp ../build/data/country/* ./data/country/
-          cp ../build/data/special/* ./data/special/
-          # 合并大陆香港澳门
-          cat ./data/country/CN.txt > ./data/COUNTRY_ALL_CN.txt
-          echo '' >> ./data/COUNTRY_ALL_CN.txt
-          cat ./data/country/HK.txt >> ./data/COUNTRY_ALL_CN.txt
-          echo '' >> ./data/COUNTRY_ALL_CN.txt
-          cat ./data/country/MO.txt >> ./data/COUNTRY_ALL_CN.txt
-          
+          cd ./data        
           set qqwry_up = 0
           if [ -z "$(git status --porcelain)" ]; then
             echo "No qqwry changes to the output on this push"
@@ -54,8 +42,8 @@ jobs:
           cd ..
           mkdir -p ip2l
           cd ./ip2l
-          wget https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION }}&file=DB1LITECSV -O c.zip
-          wget https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION }}&file=DB1LITECSVIPV6 -O c6.zip
+          wget https://www.ip2location.com/download/?token=$IP2LOCATION&file=DB1LITECSV -O c.zip
+          wget https://www.ip2location.com/download/?token=$IP2LOCATION&file=DB1LITECSVIPV6 -O c6.zip
           unzip -o c.zip
           unzip -o c6.zip
           zip -q ip2l.zip *.CSV
