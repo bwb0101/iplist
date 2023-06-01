@@ -7,7 +7,7 @@ on:
     
 env:
   TZ: Asia/Shanghai
-  IP2L_DOWN: download.pl
+  IP2L_DL: download.pl
 
 jobs:
   build:
@@ -41,9 +41,9 @@ jobs:
           
           cd ..
           mkdir -p ip2l
-          chmod +x $IP2L_DOWN
-          ./$IP2L_DOWN -package DB1 -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c.zip
-          ./$IP2L_DOWN -package DB1IPV6 -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c6.zip
+          chmod +x $IP2L_DL
+          ./$IP2L_DL -package DB1 -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c.zip
+          ./$IP2L_DL -package DB1IPV6 -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c6.zip
           cd ./ip2l
           unzip -o c.zip
           unzip -o c6.zip
