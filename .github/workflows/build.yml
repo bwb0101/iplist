@@ -43,7 +43,7 @@ jobs:
           echo '' >> ./data/COUNTRY_ALL_CN.txt
           cat ./data/country/MO.txt >> ./data/COUNTRY_ALL_CN.txt
           
-          qqwry_up = 0
+          set qqwry_up = 0
           if [ -z "$(git status --porcelain)" ]; then
             echo "No qqwry changes to the output on this push"
           else
@@ -62,7 +62,7 @@ jobs:
           cp ./*.CSV ../data/ip2location/
           cp ./ip2l.zip ../data/ip2location/
 
-          ip2l_up = 0
+          set ip2l_up = 0
           cd ./ip2l
           if [ -z "$(git status --porcelain)" ]; then
             echo "No ip2l changes to the output on this push"
