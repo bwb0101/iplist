@@ -43,15 +43,39 @@ jobs:
           echo '' >> ./data/COUNTRY_ALL_CN.txt
           cat ./data/country/MO.txt >> ./data/COUNTRY_ALL_CN.txt
           
+          qqwry_up = 0
           if [ -z "$(git status --porcelain)" ]; then
-            echo "No changes to the output on this push; exiting."
-            exit 0
+            echo "No qqwry changes to the output on this push"
+          else
+            echo "$(date '+%Y%m%d%H%M%S')" > ./data/qqwry.ver
+            qqwry_up = 1
           fi
+          
+          cd ..
+          mkdir -p ip2l
+          cd ./ip2l
+          wget https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION }}&file=DB1LITECSV c.zip
+          wget https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION }}&file=DB1LITECSVIPV6 c6.zip
+          unzip -o c.zip
+          unzip -o c6.zip
+          zip -q ip2l.zip *.CSV
+          cp ./*.CSV ../data/ip2location/
+          cp ./ip2l.zip ../data/ip2location/
 
-          echo "$(date '+%Y%m%d%H%M%S')" > ./data/version
-
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "bw@bw.com"
-          git add .
-          git commit -m "[auto] $(date '+%Y-%m-%d %H:%M:%S')"
-          git push
+          ip2l_up = 0
+          cd ./ip2l
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No ip2l changes to the output on this push"
+          else
+            echo "$(date '+%Y%m%d%H%M%S')" > ./data/ip2l.ver
+            ip2l_up = 1
+          fi
+          
+          if [ $qqwry_up = 1 ] || [ $ip2l_up = 1 ]; then
+            cd ../data
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "bw@bw.com"
+            git add .
+            git commit -m "[auto] $(date '+%Y-%m-%d %H:%M:%S')"
+            git push
+          fi
