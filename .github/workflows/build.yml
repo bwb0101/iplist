@@ -54,8 +54,8 @@ jobs:
           cd ..
           mkdir -p ip2l
           cd ./ip2l
-          wget https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION }}&file=DB1LITECSV c.zip
-          wget https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION }}&file=DB1LITECSVIPV6 c6.zip
+          wget https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION }}&file=DB1LITECSV -O c.zip
+          wget https://www.ip2location.com/download/?token=${{ secrets.IP2LOCATION }}&file=DB1LITECSVIPV6 -O c6.zip
           unzip -o c.zip
           unzip -o c6.zip
           zip -q ip2l.zip *.CSV
