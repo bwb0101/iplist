@@ -34,6 +34,7 @@ jobs:
           sudo -E apt-get -qq install libcrypt-ssleay-perl
 
           cd ./data        
+          echo $PWD
           set qqwry_up = 0
           if [ -z "$(git status --porcelain)" ]; then
             echo "No qqwry changes to the output on this push"
@@ -44,30 +45,6 @@ jobs:
           
           cd ..
           mkdir -p ip2l
-          wget https://raw.githubusercontent.com/jkingben/iplist/master/download.pl -O $IP2L_DL
-          chmod +x $IP2L_DL
-          ./$IP2L_DL -package DB1LITE -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c.zip
-          ./$IP2L_DL -package DB1LITEIPV6 -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c6.zip
-          cd ./ip2l
-          unzip -o c.zip
-          unzip -o c6.zip
-          zip -q ip2l.zip *.CSV
-          cp *.CSV ../data/ip2location/
-          cp ip2l.zip ../data/ip2location/
-
-          set ip2l_up = 0
-          if [ -z "$(git status --porcelain)" ]; then
-            echo "No ip2l changes to the output on this push"
-          else
-            echo "$(date '+%Y%m%d%H%M%S')" > ../data/ip2l.ver
-            ip2l_up = 1
-          fi
+          echo $PWD
           
-          if [ $qqwry_up = 1 ] || [ $ip2l_up = 1 ]; then
-            cd ../data
-            git config --global user.name "github-actions[bot]"
-            git config --global user.email "bw@bw.com"
-            git add .
-            git commit -m "[auto] $(date '+%Y-%m-%d %H:%M:%S')"
-            git push
-          fi
+          ls ./data
