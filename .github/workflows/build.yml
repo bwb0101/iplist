@@ -49,6 +49,7 @@ jobs:
           cat ./data/country/MO.txt >> ./data/COUNTRY_ALL_CN.txt
           md5sum ./data/COUNTRY_ALL_CN.txt | awk '{ print $1 }' > ./data/qqwry.sum
           
+          cd ..
           mkdir -p ip2l
           wget https://raw.githubusercontent.com/jkingben/iplist/master/$IP2L_DL -O $IP2L_DL
           chmod +x $IP2L_DL
@@ -58,13 +59,13 @@ jobs:
           unzip -o c.zip
           unzip -o c6.zip
           zip -q ip2l.zip *.CSV
-          mkdir -p ../data/ip2location
-          #cp *.CSV ../data/ip2location/
-          cp ip2l.zip ../data/ip2location/
-          md5sum ../data/ip2location/ip2l.zip | awk '{ print $1 }' > ../data/ip2l.sum
+          mkdir -p ../data/data/ip2location
+          #cp *.CSV ../data/data/ip2location/
+          cp ip2l.zip ../data/data/ip2location/
+          md5sum ../data/data/ip2location/ip2l.zip | awk '{ print $1 }' > ../data/data/ip2l.sum
           cd ..
                     
-          cd ./data
+          cd ./data/data
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to the output on this push; exiting."
             exit 0
