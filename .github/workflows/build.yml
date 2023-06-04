@@ -1,0 +1,78 @@
+name: build
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"
+    
+env:
+  TZ: Asia/Shanghai
+  IP2L_DL: download.pl
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Builder
+        uses: actions/checkout@v3
+        with:
+          path: build
+          ref: build
+      - name: Checkout Data
+        uses: actions/checkout@v3
+        with:
+          path: data
+          ref: master
+      - name: Parse
+        run: |
+          cd build
+          yarn install
+          yarn add qqwry.ipdb
+          yarn build
+      - name: Push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          sudo -E apt-get -qq install libwww-perl
+          sudo -E apt-get -qq install libcrypt-ssleay-perl
+
+          cd ./data
+
+          cp ../build/data/cncity/* ./data/cncity/
+          cp ../build/data/country/* ./data/country/
+          cp ../build/data/special/* ./data/special/
+          # 合并大陆香港澳门
+          cat ./data/country/CN.txt > ./data/COUNTRY_ALL_CN.txt
+          echo '' >> ./data/COUNTRY_ALL_CN.txt
+          cat ./data/country/HK.txt >> ./data/COUNTRY_ALL_CN.txt
+          echo '' >> ./data/COUNTRY_ALL_CN.txt
+          cat ./data/country/MO.txt >> ./data/COUNTRY_ALL_CN.txt
+          md5sum ./data/COUNTRY_ALL_CN.txt | awk '{ print $1 }' > ./data/qqwry.sum
+          
+          cd ..
+          mkdir -p ip2l
+          wget https://raw.githubusercontent.com/jkingben/iplist/master/$IP2L_DL -O $IP2L_DL
+          chmod +x $IP2L_DL
+          ./$IP2L_DL -quiet -package DB1LITE -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c.zip
+          ./$IP2L_DL -quiet -package DB1LITEIPV6 -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c6.zip
+          cd ./ip2l
+          unzip -o c.zip
+          unzip -o c6.zip
+          zip -q ip2l.zip *.CSV
+          mkdir -p ../data/data/ip2location
+          #cp *.CSV ../data/data/ip2location/
+          cp ip2l.zip ../data/data/ip2location/
+          md5sum ../data/data/ip2location/ip2l.zip | awk '{ print $1 }' > ../data/data/ip2l.sum
+          cd ..
+                    
+          cd ./data/data
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to the output on this push; exiting."
+            exit 0
+          fi
+
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "bw@bw.com"
+          git add .
+          git commit -m "[auto] $(date '+%Y-%m-%d %H:%M:%S')"
+          git push
