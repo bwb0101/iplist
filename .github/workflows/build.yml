@@ -25,14 +25,14 @@ jobs:
           ref: master
       - name: Parse
         run: |
-          ll
+          ls -l
           cd build
       - name: Push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ll
+          ls -l
           cd ./data
-          ll
+          ls -l
 
           
