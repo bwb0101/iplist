@@ -13,11 +13,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Builder
-        uses: actions/checkout@v3
-        with:
-          path: build
-          ref: build
       - name: Checkout Data
         uses: actions/checkout@v3
         with:
@@ -25,10 +20,9 @@ jobs:
           ref: master
       - name: Parse
         run: |
-          cd build
-          yarn install
-          yarn add qqwry.ipdb
-          yarn build
+          cd ./data/parse/qqwry
+          chmod +x build.sh
+          ./build.sh
       - name: Push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -37,16 +31,6 @@ jobs:
           sudo -E apt-get -qq install libcrypt-ssleay-perl
 
           cd ./data
-
-          cp ../build/data/cncity/* ./data/cncity/
-          cp ../build/data/country/* ./data/country/
-          cp ../build/data/special/* ./data/special/
-          # 合并大陆香港澳门
-          cat ./data/country/CN.txt > ./data/COUNTRY_ALL_CN.txt
-          echo '' >> ./data/COUNTRY_ALL_CN.txt
-          cat ./data/country/HK.txt >> ./data/COUNTRY_ALL_CN.txt
-          echo '' >> ./data/COUNTRY_ALL_CN.txt
-          cat ./data/country/MO.txt >> ./data/COUNTRY_ALL_CN.txt
           md5sum ./data/COUNTRY_ALL_CN.txt | awk '{ print $1 }' > ./data/qqwry.sum
           
           cd ..
