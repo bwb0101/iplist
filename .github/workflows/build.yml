@@ -47,7 +47,7 @@ jobs:
           cp ip2l.zip ../data/data/ip2location/
           md5sum ../data/data/ip2location/ip2l.zip | awk '{ print $1 }' > ../data/data/ip2l.sum
           cd ..
-                    
+
           cd ./data/data
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to the output on this push; exiting."
