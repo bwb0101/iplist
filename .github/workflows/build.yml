@@ -152,8 +152,3 @@ jobs:
           keep_latest: 5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: print commit hash
-        run: |
-          echo $GITHUB_SHA
-
