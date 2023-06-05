@@ -155,3 +155,9 @@ jobs:
           keep_latest: 5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 删除多余的workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          retain_days: 1
+          keep_minimum_runs: 5
