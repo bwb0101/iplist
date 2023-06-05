@@ -85,7 +85,7 @@ jobs:
           
           7z e -y $zip setup.exe
           ./innoextract setup.exe -I qqwry.dat
-          if [ -f ./app/qqwry.dat ]; then
+          if [ -f "./app/qqwry.dat" ]; then
             cp ./app/qqwry.dat ./qqwry.dat
           fi
 
