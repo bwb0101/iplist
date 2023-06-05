@@ -59,8 +59,7 @@ jobs:
           cd build
           link=${{ env.LINK }}
           mkdir -p Downloads
-          cd Downloads
-          wget --no-check-certificate --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36" $link
+          wget --no-check-certificate --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36" $link -P ./Downloads
 
       - name: 缓存innoextract
         uses: actions/cache@v3
