@@ -81,7 +81,6 @@ jobs:
           echo "dat_filename=$filename" >> $GITHUB_ENV
           7z e -y $zip setup.exe
           ./innoextract setup.exe -I qqwry.dat
-          ls -l
           cp ./app/qqwry.dat ./qqwry.dat
 
       - name: 解析qqwry.data成所需的文件
