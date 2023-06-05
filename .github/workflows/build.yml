@@ -78,11 +78,8 @@ jobs:
           cd build
           $zip = (Get-ChildItem Downloads\*.zip)[0].FullName
           $filename = (Get-ChildItem Downloads\*.zip)[0].Name
-          echo "dat_filename=$filename" >> $GITHUB_ENV
-          echo $(Get-ChildItem Downloads\*.zip)[0].Name
-          echo $filename
-          echo ${{ env.dat_filename }}
-          
+          $name = $filename.Substring($filename.IndexOf('-') + 1 , $filename.length - $filename.IndexOf('-') - 5)
+          echo "dat_date=$name" | Out-File -FilePath $env:GITHUB_ENV
           7z e -y $zip setup.exe
           ./innoextract setup.exe -I qqwry.dat
           #if [ -f "./app/qqwry.dat" ]; then
@@ -136,7 +133,7 @@ jobs:
           #allowUpdates: true
           #replacesArtifacts: true
           tag: ${{ env.DATE }}
-          body: ${{ env.dat_filename }}
+          body: ${{ env.dat_date }}
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: ./data/data/COUNTRY_ALL_CN.txt
 
