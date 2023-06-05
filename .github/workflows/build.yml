@@ -14,6 +14,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Builder
+        uses: actions/checkout@v3
+        with:
+          path: build
+          ref: build
       - name: Checkout Data
         uses: actions/checkout@v3
         with:
@@ -21,7 +26,8 @@ jobs:
           ref: master
       - name: Parse
         run: |
-          cd ./data/parse/qqwry
+          cp ./data/parse/qqwry/* ./build
+          cd build
           chmod +x build.sh
           ./build.sh
       - name: Push
