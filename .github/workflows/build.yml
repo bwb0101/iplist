@@ -3,7 +3,8 @@ name: build
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 3 * * *"
+    # local 3点
+    - cron: 0 19 */3 * *
     
 env:
   TZ: Asia/Shanghai
