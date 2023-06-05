@@ -50,17 +50,12 @@ jobs:
           pip install requests
           pip install bs4
       
-      - name: 从微信公众号获取下载连接
-        run: |
-          link=$(python qqwry.py)
-          echo "LINK=${link}" >> $GITHUB_ENV
-
-      - name: 下载QQWRY
+      - name: 从微信公众号下载QQWRY
         run: |
           cd build
           pwd
           ls -l
-          link=${{ env.LINK }}
+          link=$(python qqwry.py)
           mkdir -p Downloads
           wget --no-check-certificate --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36" $link -P ./Downloads
 
