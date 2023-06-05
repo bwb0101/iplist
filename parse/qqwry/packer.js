@@ -33,4 +33,4 @@ while (true) {
     if (data.endIP === '255.255.255.255') break
     ip = libqqwry.intToIP(data.endInt + 1)
 }
-fs.writeFileSync('../../data/COUNTRY_ALL_CN.txt', outs.join('\n'))
+fs.writeFileSync('../data/COUNTRY_ALL_CN.txt', outs.join('\n'))
