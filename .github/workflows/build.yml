@@ -79,9 +79,15 @@ jobs:
           $zip = (Get-ChildItem Downloads\*.zip)[0].FullName
           $filename = (Get-ChildItem Downloads\*.zip)[0].Name
           echo "dat_filename=$filename" >> $GITHUB_ENV
+          echo $(Get-ChildItem Downloads\*.zip)[0].Name
+          echo $filename
+          echo ${{ env.dat_filename }}
+          
           7z e -y $zip setup.exe
           ./innoextract setup.exe -I qqwry.dat
-          cp ./app/qqwry.dat ./qqwry.dat
+          if [ -f ./app/qqwry.dat ]; then
+            cp ./app/qqwry.dat ./qqwry.dat
+          fi
 
       - name: 解析qqwry.data成所需的文件
         run: |
