@@ -28,6 +28,7 @@ jobs:
           ref: master
       - name: 初始化所需脚本
         run: |
+          ls -l
           cp ./data/parse/qqwry/* ./build
 
       - name: 安装Python
@@ -57,6 +58,8 @@ jobs:
       - name: 下载QQWRY
         run: |
           cd build
+          pwd
+          ls -l
           link=${{ env.LINK }}
           mkdir -p Downloads
           wget --no-check-certificate --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36" $link -P ./Downloads
