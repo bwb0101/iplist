@@ -9,28 +9,90 @@ on:
 env:
   TZ: Asia/Shanghai
   IP2L_DL: download.pl
+  innoextract_version: 1.9
+  arch: amd64
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Builder
+      - name: 构建一个Builder
         uses: actions/checkout@v3
         with:
           path: build
           ref: build
-      - name: Checkout Data
+      - name: 检出自身
         uses: actions/checkout@v3
         with:
           path: data
           ref: master
-      - name: Parse
+      - name: 初始化所需脚本
         run: |
           cp ./data/parse/qqwry/* ./build
+
+      - name: 安装Python
+        id: setup-python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: 缓存依赖
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: | 
+            ${{ runner.os }}-pip-
+      
+      - name: 安装依赖
+        run: |
+          cd build
+          pip install requests
+          pip install bs4
+      
+      - name: 从微信公众号获取下载连接
+        run: |
+          link=$(python qqwry.py)
+          echo "LINK=${link}" >> $GITHUB_ENV
+
+      - name: 下载QQWRY
+        run: |
+          cd build
+          link=${{ env.LINK }}
+          mkdir -p Downloads
+          cd Downloads
+          wget --no-check-certificate --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36" $link
+
+      - name: 缓存innoextract
+        uses: actions/cache@v3
+        id: cache-innoextract
+        with:
+          path: innoextract
+          key: ${{ runner.os }}-innoextract-${{ env.innoextract_version }}
+      
+      - name: 下载innoextract
+        if: steps.cache-innoextract.outputs.cache-hit != 'true'
+        run: |
+          cd build
+          wget https://github.com/dscharrer/innoextract/releases/download/${{ env.innoextract_version }}/innoextract-${{ env.innoextract_version }}-linux.tar.xz
+          tar -xvf innoextract-${{ env.innoextract_version }}-linux.tar.xz innoextract-${{ env.innoextract_version }}-linux/bin/${{ env.arch }}/innoextract --strip-components 3
+
+      - name: 获取qqwry.dat
+        id: dat_date
+        shell: pwsh
+        run: |
+          cd build
+          $zip = (Get-ChildItem Downloads\*.zip)[0].FullName
+          $filename = (Get-ChildItem Downloads\*.zip)[0].Name
+          echo "dat_filename=$filename" >> $GITHUB_ENV
+          7z e -y $zip setup.exe
+          ./innoextract setup.exe -I qqwry.dat
+
+      - name: 解析qqwry.data成所需的文件
+        run: |
           cd build
           chmod +x build.sh
           ./build.sh
-      - name: Push
+      - name: 检测是否有更新
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -54,19 +116,46 @@ jobs:
           #cp *.CSV ../data/data/ip2location/
           cp ip2l.zip ../data/data/ip2location/
           md5sum ../data/data/ip2location/ip2l.zip | awk '{ print $1 }' > ../data/data/ip2l.sum
-          cd ..
 
-          cd ./data/data
+          cd ../data/data
           if [ -z "$(git status --porcelain)" ]; then
             echo "No changes to the output on this push; exiting."
             exit 0
           fi
 
+          echo "GIT_UPDATE=true" >> $GITHUB_ENV
+          echo "DATE=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+
+      - name: 上传ip文件到发布页
+        uses: ncipollo/release-action@main
+        if: env.GIT_UPDATE == 'true'
+        with:
+          name: ${{ env.DATE }}
+          #allowUpdates: true
+          #replacesArtifacts: true
+          tag: ${{ env.DATE }}
+          body: ${{ env.dat_filename }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: ./data/data/COUNTRY_ALL_CN.txt
+
+      - name: 提交修改
+        if: env.GIT_UPDATE == 'true'
+        run: |
+          cd ./data/data
           git config --global user.name "github-actions[bot]"
           git config --global user.email "bw@bw.com"
           git add .
           git commit -m "[auto] $(date '+%Y-%m-%d %H:%M:%S')"
           git push
+
+      - name: 保留发布页5天内的文档
+        if: env.GIT_UPDATE == 'true'
+        uses: dev-drprasad/delete-older-releases@v0.2.1
+        with:
+          #repo: <owner>/<repoName> # defaults to current repo
+          keep_latest: 5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: print commit hash
         run: |
