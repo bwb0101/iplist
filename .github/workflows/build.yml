@@ -85,9 +85,9 @@ jobs:
           
           7z e -y $zip setup.exe
           ./innoextract setup.exe -I qqwry.dat
-          if [ -f "./app/qqwry.dat" ]; then
-            cp ./app/qqwry.dat ./qqwry.dat
-          fi
+          #if [ -f "./app/qqwry.dat" ]; then
+          cp ./app/qqwry.dat ./qqwry.dat
+          #fi
 
       - name: 解析qqwry.data成所需的文件
         run: |
