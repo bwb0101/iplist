@@ -24,6 +24,7 @@ while (true) {
         for (let str of cn) {
             if (data.Country.startsWith(str)) {
                 isCn = true
+                break
             }
         }
         if (isCn) {
