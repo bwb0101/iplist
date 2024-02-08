@@ -100,7 +100,7 @@ jobs:
 
           cd ./data
           md5sum ./data/COUNTRY_ALL_CN.txt | awk '{ print $1 }' > ./data/qqwry.sum
-          md5sun ./data/ip_gibo.txt | awk '{ print $1 }' > ./data/ip_gibo.sum
+          md5sum ./data/ip_gibo.txt | awk '{ print $1 }' > ./data/ip_gibo.sum
           
           cd ..
           mkdir -p ip2l
