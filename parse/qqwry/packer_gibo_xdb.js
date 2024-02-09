@@ -37,7 +37,7 @@ while (true) {
         if (region === "") {
             outs.push("-")  // 忽略的ip段
         } else {
-            outs.push(data.begIP + '|' + data.endIP + "|" + key)
+            outs.push(data.begIP + '|' + data.endIP + "|" + region)
         }
     }
     if (data.endIP === '255.255.255.255') break
