@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-wget wget https://github.com/metowolf/qqwry.dat/releases/latest/download/qqwry.dat
+wget https://github.com/metowolf/qqwry.dat/releases/latest/download/qqwry.dat
 
 npm install
 
