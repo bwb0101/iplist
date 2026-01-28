@@ -102,20 +102,20 @@ jobs:
           md5sum ./data/COUNTRY_ALL_CN.txt | awk '{ print $1 }' > ./data/qqwry.sum
           md5sum ./data/ip_gibo.txt | awk '{ print $1 }' > ./data/ip_gibo.sum
           
-          cd ..
-          mkdir -p ip2l
-          cp ./data/$IP2L_DL ./
-          chmod +x $IP2L_DL
-          ./$IP2L_DL -quiet -package DB1LITE -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c.zip
-          ./$IP2L_DL -quiet -package DB1LITEIPV6 -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c6.zip
-          cd ./ip2l
-          unzip -o c.zip
-          unzip -o c6.zip
-          zip -q ip2l.zip *.CSV
-          mkdir -p ../data/data/ip2location
-          #cp *.CSV ../data/data/ip2location/
-          cp ip2l.zip ../data/data/ip2location/
-          md5sum ../data/data/ip2location/ip2l.zip | awk '{ print $1 }' > ../data/data/ip2l.sum
+          #cd ..
+          #mkdir -p ip2l
+          #cp ./data/$IP2L_DL ./
+          #chmod +x $IP2L_DL
+          #./$IP2L_DL -quiet -package DB1LITE -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c.zip
+          #./$IP2L_DL -quiet -package DB1LITEIPV6 -token ${{ secrets.IP2LOCATION }} -output ./ip2l/c6.zip
+          #cd ./ip2l
+          #unzip -o c.zip
+          #unzip -o c6.zip
+          #zip -q ip2l.zip *.CSV
+          #mkdir -p ../data/data/ip2location
+          ##cp *.CSV ../data/data/ip2location/
+          #cp ip2l.zip ../data/data/ip2location/
+          #md5sum ../data/data/ip2location/ip2l.zip | awk '{ print $1 }' > ../data/data/ip2l.sum
 
           cd ../data/data
           if [ -z "$(git status --porcelain)" ]; then
